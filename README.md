@@ -1,1 +1,1 @@
-# cli-node
+# CLI client
