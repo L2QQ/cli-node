@@ -2,9 +2,12 @@
   "name": "cli-node",
   "version": "0.1.0",
   "description": "CLI client to L2QQ exchange",
-  "main": "index.js",
+  "main": "./bin/l2qq",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "l2qq": "./bin/l2qq"
   },
   "repository": {
     "type": "git",
@@ -18,5 +21,13 @@
   "bugs": {
     "url": "https://github.com/L2QQ/cli-node/issues"
   },
-  "homepage": "https://github.com/L2QQ/cli-node#readme"
+  "homepage": "https://github.com/L2QQ/cli-node#readme",
+  "dependencies": {
+    "big.js": "^5.1.2",
+    "binance": "^1.3.3",
+    "cli-table": "^0.3.1",
+    "colors": "^1.3.2",
+    "commander": "^2.18.0",
+    "window-size": "^1.1.1"
+  }
 }

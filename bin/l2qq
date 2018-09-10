@@ -1,0 +1,17 @@
+#!/usr/bin/env node
+
+const program = require('commander')
+const colors = require('colors')
+
+const {
+    version: CLI_VERSION,
+} = require('../package.json')
+
+program
+    .version(CLI_VERSION)
+    .description('L2QQ Exchange API')
+
+const commands = require('../commands')
+Object.keys(commands).forEach((key) => commands[key](program))
+
+program.parse(process.argv)
