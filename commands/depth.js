@@ -94,5 +94,6 @@ module.exports = (program) => {
     program
         .command('depth <symbol>')
         .description('View the order book for a specified market')
+        .option('-v, --vertical', 'Show order book vertically')
         .action(depth)
 }
