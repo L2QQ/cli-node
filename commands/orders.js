@@ -1,12 +1,11 @@
 const binance = require('binance')
 const config = require('../utils/config')
 
-function renderSuccess(res) {
-    console.log('ORDER CANCELLED'.bold.cyan)
+function render(title) {
 }
 
 function renderError(err) {
-    console.error('CANCEL_REJECTED'.bold.red)
+    console.error('FAILURE'.bold.red)
     if (err.msg) {
         console.error(err.msg.gray)
     } else if (err.message) {
@@ -17,7 +16,10 @@ function renderError(err) {
     console.error()
 }
 
-function cancel(symbol, orderId) {
+function orders(symbol, cmd) {
+    console.log(cmd)
+    console.log(cmd.options)
+
     if (!config.key || !config.secret) {
         return console.error('Setup api key and secret in your config (~/.l2qq.json)')
     }
@@ -29,15 +31,18 @@ function cancel(symbol, orderId) {
 
     console.log(`\nMarket: ${symbol.toUpperCase()}\n`.bold)
 
-    api.cancelOrder({
-        symbol: symbol.toUpperCase(),
-        orderId: orderId
-    }).then(renderSuccess).catch(renderError)
+    if (cmd.open) {
+        api.openOrders(symbol.toUpperCase()).then(renderOrders).catch(renderError)
+    } else {
+        api.allOrders(symbol.toUpperCase()).then(renderOrders).catch(renderError)
+    }
 }
 
 module.exports = (program) => {
     program
-        .command('cancel <symbol> <orderId>')
-        .description('Cancel order')
-        .action(cancel)
+        .command('orders <symbol>')
+        .description('View orders')
+        .option('-o, --open', 'Show open orders')
+        .option('-w, --watch', 'Show open orders')
+        .action(orders)
 }

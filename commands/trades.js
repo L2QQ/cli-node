@@ -1,7 +1,7 @@
 const binance = require('binance')
 const size = require('window-size')
 const Table = require('cli-table')
-const config =require('../utils/config')
+const config = require('../utils/config')
 
 function render(symbol, trades) {
     console.clear()
@@ -51,8 +51,8 @@ function render(symbol, trades) {
 
     trades.forEach((trade) => {
         innerTable.push([
-            trade.maker ? trade.price.red : trade.price.green, 
-            trade.quantity.white, 
+            trade.maker ? trade.price.red : trade.price.green,
+            trade.quantity.white,
             formatTime(new Date(trade.time)).white
         ])
     })
@@ -64,27 +64,47 @@ function render(symbol, trades) {
 function trades(symbol) {
     render(symbol, [])
 
-    let trades = []
+    const limit = 20
+    this.trades = []
+
+    const rest = new binance.BinanceRest({})
+    rest._baseUrl = config.restBaseUrl
 
     const ws = new binance.BinanceWS(true)
     ws._baseUrl = config.wsBaseUrl + 'ws/';
     ws._combinedBaseUrl = config.wsBaseUrl + 'stream?streams=';
 
-    ws.onTrade(symbol, (data) => {
-        trades.unshift(data)
-        trades = trades.slice(0, 15)
-        render(symbol, trades)
+    ws.onTrade(symbol, (trade) => {
+        this.trades.unshift(trade)
+        this.trades = this.trades.slice(0, limit)
+        render(symbol, this.trades)
+    }).on('open', () => {
+        rest.trades(symbol.toUpperCase()).then((trades) => {
+            const ids = this.trades.map(t => t.tradeId)
+            trades = trades.filter(t => !ids.includes(t.id))
+            this.trades = this.trades.concat(trades.map(t => ({
+                orderId: t.id,
+                price: t.price,
+                quantity: t.qty,
+                maker: t.isBuyerMaker,
+                time: t.time
+            })))
+            this.trades.sort((a, b) => {
+                return b.orderId - a.orderId
+            })
+            this.trades = this.trades.slice(0, limit)
+            render(symbol, this.trades)
+        })
     })
 
     process.stdout.on('resize', () => {
-        render(symbol, trades)
+        render(symbol, this.trades)
     })
 }
 
 function calculateTableWidths(windowWidth) {
     const mainTableWidth = windowWidth - 3
     const innerTableWidth = Math.floor((mainTableWidth - 4) / 3)
-
     return { mainTableWidth, innerTableWidth }
 }
 
