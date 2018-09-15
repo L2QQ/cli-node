@@ -1,6 +1,6 @@
 const binance = require('binance')
 const Table = require('cli-table')
-const config = require('../../utils/config')
+const config = require('../utils/config')
 
 index = 0
 interval = null

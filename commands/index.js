@@ -2,18 +2,18 @@ const depth = require('./depth')
 const trades = require('./trades')
 const buy = require('./buy')
 const sell = require('./sell')
+const cancel = require('./cancel')
 const orders = require('./orders')
 const balances = require('./balances')
-const terminal = require('./terminal')
-const cancel = require('./cancel')
+const events = require('./events')
 
 module.exports = {
     depth,
     trades,
     buy,
     sell,
+    cancel,
     orders,
     balances,
-    terminal,
-    cancel
+    events
 }

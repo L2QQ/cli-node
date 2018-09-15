@@ -1,7 +1,86 @@
 const binance = require('binance')
+const size = require('window-size')
+const Table = require('cli-table')
 const config = require('../utils/config')
 
-function render(title) {
+function renderOrders(orders) {
+    const winSize = size.get()
+
+    const table = new Table({
+        head: ['ORDERS'],
+        style: { head: ['gray'] },
+        colWidths: [112]
+    })
+
+    const options = {
+        head: ['Id', 'Status', 'Type', 'Side', 'Qty', 'Executed Qty', 'Price', 'Avg Price'],
+        style: { head: ['gray'] },
+        colWidths: [8, 18, 10, 10, 16, 16, 16],
+        chars: {
+            'top': '',
+            'top-mid': '',
+            'top-left': '',
+            'top-right': '',
+            'bottom': '',
+            'bottom-mid': '',
+            'bottom-left': '',
+            'bottom-right': '',
+            'left': '',
+            'left-mid': '',
+            'mid': '',
+            'mid-mid': '',
+            'right': '',
+            'right-mid': '',
+            'middle': ''
+        }
+    }
+
+    const innerTable = new Table(options)
+    table.push([innerTable])
+
+    orders.reverse()
+    orders = orders.slice(0, 30)
+
+    function side(order) {
+        return order.side == 'BUY' ? order.side.green : order.side.red
+    }
+
+    function status(order) {
+        if (order.status == 'NEW') {
+            return order.status.green.bold
+        } else if (order.status == 'FILLED') {
+            return order.status.cyan.bold
+        } else if (order.status == 'CANCELED') {
+            return order.status.yellow.bold
+        }
+        return order.status.bold
+    }
+
+    function avgPrice(order) {
+        if (parseFloat(order.executedQty) > 0) {
+            return (parseFloat(order.cummulativeQty) / parseFloat(order.executedQty)).toFixed(8)
+        }
+        return ''
+    }
+
+    for (const order of orders) {
+        innerTable.push([
+            order.id,
+            status(order),
+            order.type,
+            side(order),
+            order.quantity,
+            order.executedQty,
+            order.price ? order.price : '',
+            avgPrice(order)
+        ])
+    }
+
+    //innerTable.push(['3', '4'])
+
+    console.log(orders)
+    
+    console.log(table.toString())
 }
 
 function renderError(err) {
@@ -17,24 +96,30 @@ function renderError(err) {
 }
 
 function orders(symbol, cmd) {
-    console.log(cmd)
-    console.log(cmd.options)
-
     if (!config.key || !config.secret) {
         return console.error('Setup api key and secret in your config (~/.l2qq.json)')
     }
-    const api = new binance.BinanceRest({
+    const rest = new binance.BinanceRest({
         key: config.key,
         secret: config.secret
     })
-    api._baseUrl = config.restBaseUrl
+    rest._baseUrl = config.restBaseUrl
 
     console.log(`\nMarket: ${symbol.toUpperCase()}\n`.bold)
 
     if (cmd.open) {
-        api.openOrders(symbol.toUpperCase()).then(renderOrders).catch(renderError)
+        rest.openOrders(symbol.toUpperCase()).then((orders) => {
+            renderOrders(orders)
+        }).catch(renderError)
     } else {
-        api.allOrders(symbol.toUpperCase()).then(renderOrders).catch(renderError)
+        rest.allOrders(symbol.toUpperCase()).then((orders) => {
+            try {
+                renderOrders(orders)
+            } catch (err) {
+                console.error(err)
+            }
+            
+        }).catch(renderError)
     }
 }
 

@@ -5,8 +5,8 @@ const config = require('../utils/config')
 
 function render(symbol, trades) {
     console.clear()
-    const windowWidth = size.get().width
-    const { mainTableWidth, innerTableWidth } = calculateTableWidths(windowWidth)
+    const winSize = size.get()
+    const { mainTableWidth, innerTableWidth } = calculateTableWidths(winSize.width)
     const table = new Table({
         head: ['LAST TRADES'],
         style: { head: ['gray'] },
@@ -44,10 +44,13 @@ function render(symbol, trades) {
     const rightHeader = 'L2QQ Exchange'
 
     ui.push('')
-    ui.push(' ' + leftHeader.bold + ' '.repeat(windowWidth - 1 - leftHeader.length - rightHeader.length - 1) + rightHeader.bold.cyan)
+    ui.push(' ' + leftHeader.bold + ' '.repeat(winSize.width - 1 - leftHeader.length - rightHeader.length - 1) + rightHeader.bold.cyan)
     ui.push('')
 
     table.push([innerTable])
+
+    const max = winSize.height - 10
+    trades = trades.slice(0, max)
 
     trades.forEach((trade) => {
         innerTable.push([
@@ -64,15 +67,15 @@ function render(symbol, trades) {
 function trades(symbol) {
     render(symbol, [])
 
-    const limit = 20
+    const limit = 100
     this.trades = []
 
     const rest = new binance.BinanceRest({})
     rest._baseUrl = config.restBaseUrl
 
     const ws = new binance.BinanceWS(true)
-    ws._baseUrl = config.wsBaseUrl + 'ws/';
-    ws._combinedBaseUrl = config.wsBaseUrl + 'stream?streams=';
+    ws._baseUrl = config.wsBaseUrl + 'ws/'
+    ws._combinedBaseUrl = config.wsBaseUrl + 'stream?streams='
 
     ws.onTrade(symbol, (trade) => {
         this.trades.unshift(trade)
@@ -103,8 +106,8 @@ function trades(symbol) {
 }
 
 function calculateTableWidths(windowWidth) {
-    const mainTableWidth = windowWidth - 3
-    const innerTableWidth = Math.floor((mainTableWidth - 4) / 3)
+    const mainTableWidth = windowWidth - 2
+    const innerTableWidth = Math.floor((mainTableWidth - 3) / 3)
     return { mainTableWidth, innerTableWidth }
 }
 

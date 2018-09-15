@@ -1,4 +1,4 @@
-const order = require('./common/order')
+const order = require('./order')
 
 function sell(symbol, qty, price) {
     order(symbol, 'SELL', qty, price)
