@@ -1,4 +1,6 @@
 {
+    "restBaseUrl": "host/",
+    "wsBaseUrl": "host/",
     "key": "",
     "secret": ""
 }

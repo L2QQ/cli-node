@@ -1,6 +1,7 @@
 const binance = require('binance')
 const size = require('window-size')
 const Table = require('cli-table')
+const config =require('../utils/config')
 
 function render(symbol, trades) {
     console.clear()
@@ -66,6 +67,9 @@ function trades(symbol) {
     let trades = []
 
     const ws = new binance.BinanceWS(true)
+    ws._baseUrl = config.wsBaseUrl + 'ws/';
+    ws._combinedBaseUrl = config.wsBaseUrl + 'stream?streams=';
+
     ws.onTrade(symbol, (data) => {
         trades.unshift(data)
         trades = trades.slice(0, 15)

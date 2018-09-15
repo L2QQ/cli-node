@@ -1,6 +1,7 @@
 const binance = require('binance')
 const size = require('window-size')
 const Table = require('cli-table')
+const config = require('../utils/config')
 
 function render(symbol, asks, bids) {
     console.clear()
@@ -72,6 +73,9 @@ function depth(symbol) {
     let bids = []
 
     const ws = new binance.BinanceWS(true)
+    ws._baseUrl = config.wsBaseUrl + 'ws/';
+    ws._combinedBaseUrl = config.wsBaseUrl + 'stream?streams=';
+
     ws.onDepthLevelUpdate(symbol, 10, (data) => {
         asks = data.asks
         bids = data.bids
