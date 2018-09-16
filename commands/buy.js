@@ -8,5 +8,6 @@ module.exports = (program) => {
     program
         .command('buy <symbol> <qty> [price]')
         .description('Buy')
+        .option('-s, --sign', 'Sign order')
         .action(buy)
 }
