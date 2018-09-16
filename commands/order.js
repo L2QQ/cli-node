@@ -101,7 +101,7 @@ function renderOrder(order) {
     innerTable.push([title('Quantity'), order.origQty])
     innerTable.push([title('Executed'), order.executedQty])
     innerTable.push([title('Avg Price'), avgPrice()])
-    
+
     console.log(table.toString())
     console.log()
 }
@@ -147,8 +147,6 @@ module.exports = (symbol, side, qty, price) => {
     } else {
         order.type = 'MARKET'
     }
-
-    //return renderOrder()
 
     startSpinner()
     api.newOrder(order).then(renderOrder).catch(renderError)

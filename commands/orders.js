@@ -76,10 +76,6 @@ function renderOrders(orders) {
         ])
     }
 
-    //innerTable.push(['3', '4'])
-
-    console.log(orders)
-    
     console.log(table.toString())
 }
 
@@ -113,12 +109,7 @@ function orders(symbol, cmd) {
         }).catch(renderError)
     } else {
         rest.allOrders(symbol.toUpperCase()).then((orders) => {
-            try {
-                renderOrders(orders)
-            } catch (err) {
-                console.error(err)
-            }
-            
+            renderOrders(orders)
         }).catch(renderError)
     }
 }
