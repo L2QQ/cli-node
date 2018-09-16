@@ -58,18 +58,18 @@ function renderOrders(orders) {
 
     function avgPrice(order) {
         if (parseFloat(order.executedQty) > 0) {
-            return (parseFloat(order.cummulativeQty) / parseFloat(order.executedQty)).toFixed(8)
+            return (parseFloat(order.cummulativeQuoteQty) / parseFloat(order.executedQty)).toFixed(8)
         }
         return ''
     }
 
     for (const order of orders) {
         innerTable.push([
-            order.id,
+            order.orderId,
             status(order),
             order.type,
             side(order),
-            order.quantity,
+            order.origQty,
             order.executedQty,
             order.price ? order.price : '',
             avgPrice(order)
