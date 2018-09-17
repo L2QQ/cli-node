@@ -156,14 +156,16 @@ module.exports = (symbol, side, qty, price, cmd) => {
         api.preSign(order).then((pre) => {
             //console.log(pre)
             let key
+            let isQtum = false
             if (pre.blockchain === 'ETH') {
                 key = config.keys.eth
             } else {
                 key = config.keys.qtum
+                isQtum = true
             }
-            console.log(key)
+            //console.log(key)
             //console.log('Private key:', key.gray)
-            const signMsg = sign(pre.message, Buffer.from(key, 'hex'))
+            const signMsg = sign(pre.message, Buffer.from(key, 'hex'), isQtum)
             //console.log('Signed message:', signMsg.white)
 
             order.signedMessage = signMsg

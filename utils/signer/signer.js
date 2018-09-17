@@ -9,8 +9,8 @@ const messenger = new Messenger()
  * @param {Buffer} privateKey Private key which should be used to sign.
  * @returns {string} Returns packed signed message ready to send to a L2 server.
  */
-function signSerializedMessage(serializedMessage, privateKey) {
-    const signerBuffer = crypto.ethereumAddressFromPrivateKey(privateKey)
+function signSerializedMessage(serializedMessage, privateKey, qtum) {
+    const signerBuffer = qtum ? crypto.ethereumAddressForQtumFromPrivateKey(privateKey) : crypto.ethereumAddressFromPrivateKey(privateKey)
     const serializedMessageBuffer = Buffer.from(serializedMessage, 'hex')
     const signedMessage = crypto.ecSignData(serializedMessageBuffer, privateKey)
     const packedSignedMessage = messenger.packSignedMessage(serializedMessageBuffer, signerBuffer, signedMessage)

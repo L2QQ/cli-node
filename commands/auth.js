@@ -31,12 +31,14 @@ async function auth() {
     //const ethKey = '1' 
     //const qtumKey = 'd'
 
+    /*
     const rest = new binance.BinanceRest({})
     rest._baseUrl = config.api.restBaseUrl
     rest.auth({
         ethKey,
         qtumKey
     })
+    */
 
     console.log()
 

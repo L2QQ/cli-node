@@ -78,6 +78,8 @@ function trades(symbol) {
 
     setInterval(() => {
         rest.trades(symbol.toUpperCase()).then((trades) => {
+
+
             this.trades = trades.map(t => ({
                 orderId: t.id,
                 price: t.price,
