@@ -4,12 +4,19 @@ const fs = require('fs')
 
 const CONFIG_NAME = '.l2qq.json'
 
+/*
 const REST_BASE_URL = 'http://142.93.32.105/'
 const WS_BASE_URL = 'ws://142.93.32.105:9050/'
+*/
+
+const REST_BASE_URL = 'http://localhost:9000/'
+const WS_BASE_URL = 'ws://localhost:9050/'
 
 var CONFIG = {
-    restBaseUrl: REST_BASE_URL,
-    wsBaseUrl: WS_BASE_URL,
+    api: {
+        restBaseUrl: REST_BASE_URL,
+        wsBaseUrl: WS_BASE_URL
+    }
 }
 
 function loadHomeConfig() {

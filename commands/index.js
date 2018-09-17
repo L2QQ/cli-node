@@ -6,6 +6,7 @@ const cancel = require('./cancel')
 const orders = require('./orders')
 const balances = require('./balances')
 const events = require('./events')
+const auth = require('./auth')
 
 module.exports = {
     depth,
@@ -15,5 +16,6 @@ module.exports = {
     cancel,
     orders,
     balances,
-    events
+    events,
+    auth
 }

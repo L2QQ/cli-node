@@ -1,7 +1,7 @@
 const order = require('./order')
 
-function sell(symbol, qty, price) {
-    order(symbol, 'SELL', qty, price)
+function sell(symbol, qty, price, cmd) {
+    order(symbol, 'SELL', qty, price, cmd)
 }
 
 module.exports = (program) => {

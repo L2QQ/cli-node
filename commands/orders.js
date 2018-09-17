@@ -92,14 +92,14 @@ function renderError(err) {
 }
 
 function orders(symbol, cmd) {
-    if (!config.key || !config.secret) {
+    if (!(config.api && config.api.key && config.api.secret)) {
         return console.error('Setup api key and secret in your config (~/.l2qq.json)')
     }
     const rest = new binance.BinanceRest({
-        key: config.key,
-        secret: config.secret
+        key: config.api.key,
+        secret: config.api.secret
     })
-    rest._baseUrl = config.restBaseUrl
+    rest._baseUrl = config.api.restBaseUrl
 
     console.log(`\nMarket: ${symbol.toUpperCase()}\n`.bold)
 

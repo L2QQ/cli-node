@@ -7,6 +7,15 @@ const {
     version: CLI_VERSION,
 } = require('../package.json')
 
+const binance = require('binance')
+binance.BinanceRest.prototype.preSign = function(query, callback) {
+    this._setTimestamp(query)
+    return this._makeRequest(query, callback, 'api/v4/presign', 'SIGNED', 'POST')
+}
+binance.BinanceRest.prototype.auth = function(query, callback) {
+    return this._makeRequest(query, callback, 'api/v4/auth', 'POST')
+}
+
 program
     .version(CLI_VERSION)
     .description('L2QQ Exchange API')

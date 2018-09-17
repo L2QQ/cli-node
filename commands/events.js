@@ -11,13 +11,13 @@ function render(data) {
 function events() {
     const binance = require('binance')
     const rest = new binance.BinanceRest({
-        key: config.key,
-        secret: config.secret
+        key: config.api.key,
+        secret: config.api.secret
     })
-    rest._baseUrl = config.restBaseUrl
+    rest._baseUrl = config.api.restBaseUrl
     const ws = new binance.BinanceWS(true)
-    ws._baseUrl = config.wsBaseUrl + 'ws/'
-    ws._combinedBaseUrl = config.wsBaseUrl + 'stream?streams='
+    ws._baseUrl = config.api.wsBaseUrl + 'ws/'
+    ws._combinedBaseUrl = config.api.wsBaseUrl + 'stream?streams='
     ws.onUserData(rest, (data) => {
         render(data)
     }, 60000)

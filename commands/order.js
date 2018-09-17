@@ -1,6 +1,7 @@
 const binance = require('binance')
 const Table = require('cli-table')
 const config = require('../utils/config')
+const sign = require('../utils/signer/signer')
 
 index = 0
 interval = null
@@ -119,15 +120,15 @@ function renderError(err) {
     console.log()
 }
 
-module.exports = (symbol, side, qty, price) => {
-    if (!config.key || !config.secret) {
+module.exports = (symbol, side, qty, price, cmd) => {
+    if (!(config.api && config.api.key && config.api.secret)) {
         return console.error('Setup api key and secret in your config (~/.l2qq.json)')
     }
     const api = new binance.BinanceRest({
-        key: config.key,
-        secret: config.secret
+        key: config.api.key,
+        secret: config.api.secret
     })
-    api._baseUrl = config.restBaseUrl
+    api._baseUrl = config.api.restBaseUrl
 
     console.log()
     console.log(`Market: ${symbol.toUpperCase()}`.bold)
@@ -148,6 +149,27 @@ module.exports = (symbol, side, qty, price) => {
         order.type = 'MARKET'
     }
 
-    startSpinner()
-    api.newOrder(order).then(renderOrder).catch(renderError)
+    //console.log(config)
+
+    //startSpinner()
+    if (cmd.sign) {
+        api.preSign(order).then((pre) => {
+            //console.log(pre)
+            let key
+            if (pre.blockchain === 'ETH') {
+                key = config.keys.eth
+            } else {
+                key = config.keys.qtum
+            }
+            console.log(key)
+            //console.log('Private key:', key.gray)
+            const signMsg = sign(pre.message, Buffer.from(key, 'hex'))
+            //console.log('Signed message:', signMsg.white)
+
+            order.signedMessage = signMsg
+            api.newOrder(order).then(renderOrder).catch(renderError)
+        }).catch(renderError)
+    } else {
+        api.newOrder(order).then(renderOrder).catch(renderError)
+    }
 }

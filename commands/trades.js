@@ -13,6 +13,9 @@ function render(symbol, trades) {
         colWidths: [mainTableWidth]
     })
 
+    trades = trades.map(t => t)
+    trades.reverse()
+
     const innerTableOptions = {
         head: ['Price', 'Quantity', 'Time'],
         style: { head: ['gray'] },
@@ -71,11 +74,29 @@ function trades(symbol) {
     this.trades = []
 
     const rest = new binance.BinanceRest({})
-    rest._baseUrl = config.restBaseUrl
+    rest._baseUrl = config.api.restBaseUrl
 
+    setInterval(() => {
+        rest.trades(symbol.toUpperCase()).then((trades) => {
+            this.trades = trades.map(t => ({
+                orderId: t.id,
+                price: t.price,
+                quantity: t.qty,
+                maker: t.isBuyerMaker,
+                time: t.time
+            }))
+            render(symbol, this.trades)
+        })
+    }, 300)
+
+    process.stdout.on('resize', () => {
+        render(symbol, this.trades)
+    })
+
+/*
     const ws = new binance.BinanceWS(true)
-    ws._baseUrl = config.wsBaseUrl + 'ws/'
-    ws._combinedBaseUrl = config.wsBaseUrl + 'stream?streams='
+    ws._baseUrl = config.api.wsBaseUrl + 'ws/'
+    ws._combinedBaseUrl = config.api.wsBaseUrl + 'stream?streams='
 
     ws.onTrade(symbol, (trade) => {
         this.trades.unshift(trade)
@@ -99,10 +120,8 @@ function trades(symbol) {
             render(symbol, this.trades)
         })
     })
-
-    process.stdout.on('resize', () => {
-        render(symbol, this.trades)
-    })
+*/
+    
 }
 
 function calculateTableWidths(windowWidth) {

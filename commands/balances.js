@@ -28,14 +28,14 @@ function render(balances) {
 }
 
 function balances() {
-    if (!config.key || !config.secret) {
+    if (!(config.api && config.api.key && config.api.secret)) {
         return console.error('Setup api key and secret in your config (~/.l2qq.json)')
     }
     const api = new binance.BinanceRest({
-        key: config.key,
-        secret: config.secret
+        key: config.api.key,
+        secret: config.api.secret
     })
-    api._baseUrl = config.restBaseUrl
+    api._baseUrl = config.api.restBaseUrl
 
     api.account().then((account) => {
         const balances = account.balances.filter((balance) => {

@@ -1,6 +1,12 @@
 {
-    "restBaseUrl": "host/",
-    "wsBaseUrl": "host/",
-    "key": "",
-    "secret": ""
+    "api": {
+        "restBaseUrl": "host/",
+        "wsBaseUrl": "host/",
+        "key": "",
+        "secret": ""
+    },
+    "keys": {
+        "eth": "",
+        "qtum": ""
+    }
 }

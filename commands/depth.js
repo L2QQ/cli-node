@@ -114,7 +114,7 @@ function renderVertically(symbol, asks, bids) {
     })
 
     function interBook() {
-        return 'Last price: ' + '142.0043000'.red + '  Spread: 0.45%'
+        return '' //'Last price: ' + '142.0043000'.red + '  Spread: 0.45%'
     }
 
     rows = Math.floor((winSize.height - 12) / 2)
@@ -163,8 +163,8 @@ function depth(symbol, cmd) {
     let bids = []
 
     const ws = new binance.BinanceWS(true)
-    ws._baseUrl = config.wsBaseUrl + 'ws/'
-    ws._combinedBaseUrl = config.wsBaseUrl + 'stream?streams='
+    ws._baseUrl = config.api.wsBaseUrl + 'ws/'
+    ws._combinedBaseUrl = config.api.wsBaseUrl + 'stream?streams='
 
     ws.onDepthLevelUpdate(symbol, 20, (depth) => {
         asks = depth.asks
